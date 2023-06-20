@@ -1,0 +1,63 @@
+﻿@page
+@model WebApp.Pages.SalesPages.CheckoutModel
+@{
+    ViewData["Title"] = "Checkout";
+}
+<div class="d-flex">
+    <a class="btn btn-primary btn-lg mx-2" asp-page="/SalesPages/Shopping">Shopping</a>
+    <a class="btn btn-primary btn-lg mx-2" asp-page="/SalesPages/Cart">Shopping Cart</a>
+    <a class="btn btn-primary btn-lg active mx-2" asp-page="/SalesPages/Checkout">Checkout</a>
+</div>
+<h2 class="pb-4 pt-2 mx-2">@ViewData["Title"]</h2>
+@if (Model.FeedBack != null)
+{
+    <p>@Model.FeedBack</p>
+}
+<table>
+    <thead>
+        <tr>
+            <th class="px-3">Item Description</th>
+            <th class="px-3">QTY</th>
+            <th class="px-3">Price</th>
+            <th class="px-3">Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in @Model.Cart)
+        {
+            <tr>
+                <td class="px-3">@item.Description</td>
+                <td class="px-3">@item.Quantity</td>
+                <td class="px-3">@item.SellingPrice.ToString("0.00")</td>
+                <td class="px-3">@((item.SellingPrice*item.Quantity).ToString("0.00"))</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="d-flex pb-4 pt-4 mx-2">
+    <form method="post">
+        <h2>Coupon</h2>
+        <div class="d-flex">
+            <input type="text" asp-for="CouponID" />
+            <button type="submit" asp-page-handler="CouponCheck" class="btn btn-primary btn-md">Check</button>
+        </div>
+    </form>
+    <div class="d-flex mx-4">
+        <div class="mx-4">
+            <h3>Subtotal</h3>
+            <h3>Tax</h3>
+            <h3>Discount</h3>
+            <h3>Total</h3>
+        </div>
+        <div>
+            <h3>@Model.Subtotal.ToString("0.00")</h3>
+            <h3>@Model.Tax.ToString("0.00")</h3>
+            <h3>@Model.Discount.ToString("0.00")</h3>
+            <h3>@Model.Total.ToString("0.00")</h3>
+            <form method="post" class="ml-5">
+                <button type="submit" asp-page-handler="PlaceOrder" class="btn btn-primary btn-md">Place Order</button>
+            </form>
+        </div>
+    </div>
+</div>

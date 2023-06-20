@@ -1,0 +1,61 @@
+﻿@page
+@model WebApp.Pages.PurchasingPages.ViewOrdersModel
+@{
+    ViewData["Title"] = "ViewOrders";
+}
+
+<h1 class="pb-4">@ViewData["Title"]</h1>
+
+<table width="100%">
+    <col style="width:10%">
+    <col style="width:10%">
+    <col style="width:10%">
+    <col style="width:10%">
+    <col style="width:10%">
+    <col style="width:10%">
+    <col style="width:10%">
+    <col style="width:10%">
+    <thead>
+        <tr>
+            <th>PurchaseOrderID</th>
+            <th>OrderDate</th>
+            <th>VendorID</th>
+            <th>EmployeeID</th>
+            <th>TaxAmount</th>
+            <th>SubTotal</th>
+            <th>Closed</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var purchaseOrder in Model.AllPurchaseOrders)
+        {
+            <tr>
+                <td>
+                    @purchaseOrder.PurchaseOrderID
+                </td>
+                <td>
+                    @purchaseOrder.OrderDate
+                </td>
+                <td>
+                    @purchaseOrder.VendorID
+                </td>
+                <td>
+                    @purchaseOrder.EmployeeID
+                </td>
+                <td>
+                    @purchaseOrder.TaxAmount
+                </td>
+                <td>
+                    @purchaseOrder.SubTotal
+                </td>
+                <td>
+                    @purchaseOrder.Closed
+                </td>
+                <td>
+                    @purchaseOrder.Notes
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

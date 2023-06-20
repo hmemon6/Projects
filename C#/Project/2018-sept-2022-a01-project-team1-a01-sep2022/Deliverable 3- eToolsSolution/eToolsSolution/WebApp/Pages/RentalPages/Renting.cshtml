@@ -1,0 +1,341 @@
+﻿@page
+@model WebApp.Pages.RentalPages.RentingModel
+@{
+    ViewData["Title"] = " Renting";
+}
+
+<div class="col-10 pb-1">
+    <p class="fs-6 fw-light" style="padding-left: 40rem">Logged as @Model.employeeName</p>
+</div>
+<h2>@ViewData["Title"]</h2>
+<form method="post" class="pt-4">
+
+    <div class="container container-md">
+        <div class="row pb-5">
+            <div class="col-4">
+                <input type="tel" class="form-control" placeholder="Phone Number 999.999.9999" aria-label="Phone Numbers" pattern="[0-9]{3}.[0-9]{3}.[0-9]{4}" asp-for="phone_number">
+            </div>
+            <div class="col-3">
+                <input type="text" class="form-control" placeholder="Rental Number" aria-label="Rental Numbers" disabled>
+            </div>
+            <div class="col">
+                <button class="btn btn-primary" asp-page-handler="SearchCustomer">Display</button>
+            </div>
+        </div>
+        @*<div class="p-3 pt-2 text-dark" style="width: 20rem">*@
+        <div class="col-10 p-3 pt-2 text-dark">
+            @if (Model.ErrorList != null && Model.ErrorList.Count() > 0)
+            {
+                <div class="alert-danger " style="--bs-bg-opacity: .5;">
+                    <ul>
+                        @foreach (var itm in Model.ErrorList)
+                        {
+                            <li>@itm.Message</li>
+                        }
+                    </ul>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.ErrFeedback))
+            {
+                <p class="alert-danger">@Model.ErrFeedback</p>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Feedback))
+            {
+                <span class="alert-success">@Model.Feedback</span>
+            }
+        </div>
+        @if (Model.customerDetails != null && Model.customerDetails.CustomerID > 0)
+        {
+            @*Customer Details*@
+            <div class="col-8 border pt-3 pb-3 ps-2">
+                <div>
+                    <div>
+                        <h5>Customer Details</h5>
+                    </div>
+                    <div class="row pt-2">
+                        <div class="col-1"> <label>Name:</label> </div>
+                        <div class="col-5">
+                            <p>@Model.customerDetails.FirstName @Model.customerDetails.LastName</p>
+                            <input type="hidden" name="customerDetails.FirstName" value="@Model.customerDetails.FirstName" readonly />
+                            <input type="hidden" name="customerDetails.LastName" value="@Model.customerDetails.LastName" readonly />
+                            <input type="hidden" name="customerDetails.CustomerID" value="@Model.customerDetails.CustomerID" readonly />
+                        </div>
+                        <div class="col-1"> <label>Email:</label> </div>
+                        <div class="col-2">
+                            <p>@Model.customerDetails.EmailAddress</p>
+                        </div>
+                        <input type="hidden" name="customerDetails.EmailAddress" value="@Model.customerDetails.EmailAddress" readonly />
+                    </div>
+                </div>
+                <div>
+                    <div class="row pt-2">
+                        <div class="col-1"> <label>Address:</label> </div>
+                        <div class="col-5">
+                            <p>@Model.customerDetails.CompleteAdd</p>
+                            <input type="hidden" name="customerDetails.CompleteAdd" value="@Model.customerDetails.CompleteAdd" readonly />
+                        </div>
+                        <div class="col-1"> <label>Phone:</label> </div>
+                        <div class="col-2">
+                            <p>@Model.customerDetails.ContactPhone</p>
+                        </div>
+                        <input type="hidden" name="customerDetails.ContactPhone" value="@Model.customerDetails.ContactPhone" readonly />
+                    </div>
+                </div>
+            </div>
+
+            @*Customer Rental List*@
+            <section class="pt-5">
+                <div class="row pt-5">
+                    <div class="col-7">
+                        <h5>Customer Rental List</h5>
+                    </div>
+                    <div class="col">
+                        <h6>Total @Model.customerRentals.Count()</h6>
+                    </div>
+                </div>
+
+                @if (Model.customerRentals.Count() == 0)
+                {
+                    <div class="col-8" style="height: 10rem">
+                        <span>No rental available.</span>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-8 overflow-scroll" style="height: 10rem">
+                        <table class="table h-50">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Action</th>
+                                    <th scope="col">Rental No.</th>
+                                    <th scope="col">Date Out</th>
+                                    <th scope="col">Date In</th>
+                                    <th scope="col">Processed By</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var rec in Model.customerRentals)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="hidden" name="customerRentals.Index" value="@rec.RentalID" />
+                                            <input type="hidden" name="customerRentals[@rec.RentalID].RentalID" value="@rec.RentalID" readonly />
+                                            <button class="btn-link border-0" type="submit" name="CustRentalID" value="@rec.RentalID"
+                                        asp-page-handler="GetRentals">
+                                                Select
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <span>@rec.RentalID</span>
+                                            <input type="hidden" name="customerRentals[@rec.RentalID].RentalID" value="@rec.RentalID" readonly />
+                                            <input type="hidden" name="customerRentals[@rec.RentalID].CouponID" value="@rec.CouponID" readonly />
+                                        </td>
+                                        <td>
+                                            <span>@rec.RentalDateOut.ToShortDateString()</span>
+                                            <input type="hidden" name="customerRentals[@rec.RentalID].RentalDateOut" value="@rec.RentalDateOut" readonly />
+                                        </td>
+                                        <td>
+                                            <span>@rec.RentalDateIn.ToShortDateString()</span>
+                                            <input type="hidden" name="customerRentals[@rec.RentalID].RentalDateIn" value="@rec.RentalDateIn" readonly />
+                                        </td>
+                                        <td>
+                                            <span>@rec.EmployeeName</span>
+                                            <input type="hidden" name="customerRentals[@rec.RentalID].EmployeeName" value="@rec.EmployeeName" readonly />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </section>
+
+            @*Equipment*@
+            <section class="pt-5">
+
+                <div class="row pt-5">
+                    <div class="col-7">
+                        <h5>Available Equipment </h5>
+                    </div>
+                    <div class="col">
+                        <h6>Total @Model.equipmentList.Count()</h6>
+                    </div>
+                </div>
+                <div class="col-8 overflow-scroll" style="height: 20rem">
+                    <table class="table h-75">
+                        <thead>
+                            <tr>
+                                <th scope="col">Action</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Serial Number</th>
+                                <th scope="col">Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var equipt in Model.equipmentList)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="hidden" name="equipmentList.Index" value="@equipt.RentalEquipmentID" />
+                                        <input type="hidden" name="equipmentList[@equipt.RentalEquipmentID].RentalEquipmentID" value="@equipt.RentalEquipmentID" readonly />
+                                        @if (Model.cantUpdate == true)
+                                        {
+                                            <button class="btn-link border-0" type="submit" disabled> Add </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn-link border-0" type="submit" name="CustEquipmentID" value="@equipt.RentalEquipmentID"
+                                        asp-page-handler="AddEquiptment">
+                                                Add
+                                            </button>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span>@equipt.CompleteDescription</span>
+                                        <input type="hidden" name="equipmentList[@equipt.RentalEquipmentID].CompleteDescription" value="@equipt.CompleteDescription" readonly />
+                                        <input type="hidden" name="equipmentList[@equipt.RentalEquipmentID].Description" value="@equipt.Description" readonly />
+                                    </td>
+                                    <td>
+                                        <span>@equipt.SerialNumber</span>
+                                        <input type="hidden" name="equipmentList[@equipt.RentalEquipmentID].SerialNumber" value="@equipt.SerialNumber" readonly />
+                                    </td>
+                                    <td>
+                                        <span>@equipt.DailyRate.ToString("N")</span>
+                                        <input type="hidden" name="equipmentList[@equipt.RentalEquipmentID].DailyRate" value="@equipt.DailyRate" readonly />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            @*Rented Equipment*@
+            <section class="pt-5">
+                <h5>Rent Equipment</h5>
+                <div class="col-8">
+                    <div class="row justify-content-start pb-3">
+                        <div class="col-8"></div>
+                        <div class="col-4 row justify-content-end">
+                            @if (Model.cantUpdate == true)
+                            {
+                                <input type="text" class="form-control w-50" placeholder="Coupon" aria-label="Coupon"
+                               maxlength="10" value="@Model.CouponIDValue" disabled>
+                                
+                                <button class="btn-link border-0" type="submit" style="width: 4rem" disabled>
+                                    Apply
+                                </button>
+                            }
+                            else
+                            {
+                                <input type="text" class="form-control w-50" placeholder="Coupon" aria-label="Coupon"
+                               maxlength="10" name="CouponIDValue" value="@Model.CouponIDValue">
+
+                                <button class="btn-link border-0" type="submit" name="CouponIDValue" value="@Model.CouponIDValue"
+                                asp-page-handler="ValidateCoupon" style="width: 4rem">
+                                    Apply
+                                </button>
+                            }
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(Model.coupMsg))
+                    {
+                        <div class="col text-end bg-info" style="--bs-bg-opacity: .5;">
+                            @Model.coupMsg
+                        </div>
+                    }
+
+                    <div class="overflow-scroll" style="height: 10rem">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Action</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Serial Number</th>
+                                    <th scope="col">Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var details in Model.custRentalDetails)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="hidden" name="custRentalDetails.Index" value="@details.RentalEquipmentID" />
+                                            <input type="hidden" name="custRentalDetails[@details.RentalEquipmentID].RentalEquipmentID" value="@details.RentalEquipmentID" readonly />
+                                            <input type="hidden" name="custRentalDetails[@details.RentalEquipmentID].RentalDays" value="@details.RentalDays" readonly />
+                                            <input type="hidden" name="custRentalDetails[@details.RentalEquipmentID].OutCondition" value="@details.OutCondition" readonly />
+                                            <input type="hidden" name="custRentalDetails[@details.RentalEquipmentID].InCondition" value="@details.InCondition" readonly />
+                                            <input type="hidden" name="custRentalDetails[@details.RentalEquipmentID].DamageRepairCost" value="@details.DamageRepairCost" readonly />
+                                            <input type="hidden" name="custRentalDetails[@details.RentalEquipmentID].Comments" value="@details.Comments" readonly />
+
+                                            @if (details.RentalDetailID != 0)
+                                            {
+                                                <input type="hidden" name="custRentalDetails[@details.RentalEquipmentID].RentalDetailID" value="@details.RentalDetailID" readonly />
+                                                @if (Model.cantUpdate == true)
+                                                {
+                                                    <button class="btn-link border-0" type="submit" disabled> Delete </button>
+                                                }
+                                                else
+                                                {
+                                                    <button class="btn-link border-0" type="submit" name="CustRentalDetailID" value="@details.RentalDetailID"
+                                            asp-page-handler="RemoveEquiptment">
+                                                        Delete
+                                                    </button>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @if (Model.cantUpdate == true)
+                                                {
+                                                    <button class="btn-link border-0" type="submit" disabled> Delete </button>
+                                                }
+                                                else
+                                                {
+                                                    <button class="btn-link border-0" type="submit" name="CustRentalDetailEquipmentID" value="@details.RentalEquipmentID"
+                                            asp-page-handler="RemoveEquiptment">
+                                                        Delete
+                                                    </button>
+                                                }
+                                            }
+                                        </td>
+                                        <td>
+                                            <span>@details.CompleteDescription</span>
+                                            <input type="hidden" name="custRentalDetails[@details.RentalEquipmentID].CompleteDescription" value="@details.CompleteDescription" readonly />
+                                            <input type="hidden" name="custRentalDetails[@details.RentalEquipmentID].Description" value="@details.Description" readonly />
+                                        </td>
+                                        <td>
+                                            <span>@details.SerialNumber</span>
+                                            <input type="hidden" name="custRentalDetails[@details.RentalEquipmentID].SerialNumber" value="@details.SerialNumber" readonly />
+                                        </td>
+                                        <td>
+                                            <span>@details.DailyRate.ToString("N")</span>
+                                            <input type="hidden" name="custRentalDetails[@details.RentalEquipmentID].DailyRate" value="@details.DailyRate" readonly />
+                                            <input type="hidden" name="custRentalDetails[@details.RentalEquipmentID].RentalRate" value="@details.RentalRate" readonly />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row pt-3">
+                        <div class="col-9 ">
+                            <h6>Total @Model.custRentalDetails.Count()</h6>
+                        </div>
+                        <div class="col">
+                            @if (Model.cantUpdate == true)
+                            {
+                                <button class="btn btn-primary" style="width: 4rem" disabled>Save</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-primary" asp-page-handler="RentSave" style="width: 4rem">Save</button>
+                            }
+
+                            <button class="btn btn-primary" asp-page-handler="RentCancel">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    </div>
+</form>

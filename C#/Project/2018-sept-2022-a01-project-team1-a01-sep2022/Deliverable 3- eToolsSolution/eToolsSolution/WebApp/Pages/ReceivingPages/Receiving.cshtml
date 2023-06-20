@@ -1,0 +1,150 @@
+﻿@page "/ReceivingPages/Receiving/{CurrentPurchaseOrderID}"
+@model WebApp.Pages.ReceivingPages.ReceivingModel
+@{
+    ViewData["Title"] = "Receiving";
+}
+
+<form method="post">
+    <div class="d-flex flex-row-reverse my-3">
+        <div class="col-4">
+            <select asp-for="@Model.isManager" class="form-select" aria-label="Select Employee Level">
+                <option value=true>Manager</option>
+                <option value=false>Not Manager</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-success mx-3" asp-page-handler="Refresh">Refresh</button>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary mx-3" asp-page-handler="Back">Go Back</button>
+        </div>
+    </div>
+
+    <h1 class="pb-4">Purchase Order Details</h1>
+    <input type="hidden" name="POID" value="@Model.POID" />
+    @if (Model.ErrorDetails.Count() > 0)
+    {
+        <blockquote class="error alert-danger">
+            <p>List of Errors:</p>
+            <ul>
+                @foreach (var detail in Model.ErrorDetails)
+                {
+                    <li>@detail</li>
+                }
+            </ul>
+        </blockquote>
+    }
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <p class="alert-danger">@Model.ErrorMessage</p>
+    }
+    @if (!string.IsNullOrEmpty(Model.FeedBackMessage))
+    {
+        <span class="alert-success">@Model.FeedBackMessage</span>
+    }
+
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Stock Item ID</th>
+                <th>Description</th>
+                <th>Quanity Ordered</th>
+                <th>Quantity Outstanding</th>
+                <th>Receive</th>
+                <th>Return</th>
+                <th>Reason</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.SelectedPODetails)
+            {
+                <tr>
+                    <td>
+                        <input type="hidden" name="SelectedPODetails.Index"
+                           value="@item.StockItemID">
+                        <input type="hidden"
+                           name="SelectedPODetails[@item.StockItemID].StockItemID"
+                           value="@item.StockItemID" />@item.StockItemID
+                    </td>
+                    <td><input type="hidden" name="SelectedPODetails[@item.StockItemID].Description" value="@item.Description" />@item.Description</td>
+                    <td><input type="hidden" name="SelectedPODetails[@item.StockItemID].QuanitiyOrdered" value="@item.QuanitiyOrdered" />@item.QuanitiyOrdered</td>
+                    <td><input type="hidden" name="SelectedPODetails[@item.StockItemID].QuanitiyOutStanding" value="@item.QuanitiyOutStanding" />@item.QuanitiyOutStanding</td>
+                    <td><input type="number" name="SelectedPODetails[@item.StockItemID].Receive" value="@item.Receive" /></td>
+                    <td><input type="number" name="SelectedPODetails[@item.StockItemID].Return" value="@item.Return" /></td>
+                    <td><input type="text" name="SelectedPODetails[@item.StockItemID].Reason" value="@item.Reason" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+    <div class="d-flex flex-row my-3">
+        <div class="mx-2">
+            <button type="submit" class="btn btn-success" asp-page-handler="Receive">Receive</button>
+        </div>
+            <div>
+                @if (Model.Employee.EmployeeID == 1)
+                {
+                    <button type="submit" class="btn btn-danger" asp-page-handler="ForceClose" disabled>Force Close </button>
+                    <label>
+                        Reason
+                        <input type="text" asp-for="ForceCloseReason" disabled/>
+                    </label>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-danger" asp-page-handler="ForceClose">Force Close </button>
+                    <label>
+                        Reason
+                        <input type="text" asp-for="ForceCloseReason" />
+                    </label>
+                }
+
+            </div>
+
+    </div>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th></th>
+                <th>CID</th>
+                <th>Description</th>
+                <th>VSN</th>
+                <th>QTY</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.UnOrderedItems.Count() > 0)
+            {
+                @foreach (var items in Model.UnOrderedItems)
+                {
+                    <tr>
+                        <td>
+                            <input type="hidden" name="UnOrderedItems.Index" value="@items.CID" />
+                            <button type="submit" name="RemoveStockID" value="@items.CID"
+                            asp-page-handler="Remove">
+                                Remove
+                            </button>
+                        </td>
+                        <td><input type="hidden" name="UnorderedItems[@items.CID].CID" value="@items.CID" readonly />@items.CID</td>
+                        <td><input type="hidden" name="UnorderedItems[@items.CID].Description" value="@items.Description" readonly />@items.Description</td>
+                        <td><input type="hidden" name="UnorderedItems[@items.CID].VSN" value="@items.VSN" readonly />@items.VSN</td>
+                        <td><input type="hidden" name="UnorderedItems[@items.CID].Quantity" value="@items.Quantity" readonly />@items.Quantity</td>
+                    </tr>
+                }
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td><button type="submit" class="btn btn-primary" asp-page-handler="Insert">Insert</button></td>
+                <td><input type="hidden" readonly /></td>
+                <td><input type="text" id="UnorderedDescription" asp-for="UnorderedDescription" /></td>
+                <td><input id="UnorderedItemVSN" type="text" asp-for="UnorderedItemVSN" /></td>
+                <td><input id="UnorderedQty" type="number" asp-for="UnorderedQty" /></td>
+            </tr>
+
+        </tfoot>
+
+    </table>
+
+</form>

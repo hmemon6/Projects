@@ -1,0 +1,77 @@
+﻿@page
+@model WebApp.Pages.SalesPages.RefundModel
+@{
+        ViewData["Title"] = "Refund";
+}
+<h2 class="pb-4 pt-2 mx-2">@ViewData["Title"]</h2>
+@if(Model.FeedBack != null)
+{
+    <p>@Model.FeedBack</p>
+}
+
+<form method="post">
+    <div class="d-flex">
+        <input type="text" asp-for="SaleID" class="rounded"/>
+        <button type="submit" asp-page-handler="LookupSale" class="btn btn-primary btn-md mx-4">Lookup Sale</button>
+        <button type="submit" asp-page-handler="Clear" class="btn btn-secondary btn-md">Clear</button>
+    </div>
+
+@if(Model.Sale != null)
+{                
+
+    <table class="mt-3">
+        <thead>
+            <tr>
+                <th class="px-2">Item</th>
+                <th class="px-2">Org Qty</th>
+                <th class="px-2">Price</th>
+                <th class="px-2">Qty</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model.SaleDetails)
+            {
+                <tr>
+                    <td class="px-2">
+                        @item.Description
+                    </td>
+                    <td class="px-2">@item.Quantity</td>
+                    <td class="px-2">@item.SellingPrice</td>
+                    <td class="px-2">
+                        @item.Quantity
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="mt-5">
+        <div class="d-flex">
+            <div class="mx-3">
+                <h3>Subtotal</h3>
+                <h3>Tax</h3>
+                <h3>Discount</h3>
+                <h3>Refund Total</h3>
+            </div>
+            <div class="mx-3">
+                <h3>@Model.SubTotal.ToString("0.00")</h3>
+                <h3>@Model.Tax.ToString("0.00")</h3>
+                <h3>@Model.Discount.ToString("0.00")</h3>
+                <h3>@Model.Total.ToString("0.00")</h3>
+            </div>
+            <div class="mx-3">
+                <button type="submit" class="btn btn-success btn-md" asp-page-handler="Refund">Refund</button>
+                @if (@Model.Sale.CouponDiscount != null)
+                {
+                    <h3 class="my-3">%@Model.Sale.CouponDiscount</h3>
+                }
+                else
+                {
+                    <h3 class="my-3">None</h3>
+                }
+            </div>
+        </div>
+    </div>
+
+}
+</form>

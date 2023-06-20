@@ -1,0 +1,18 @@
+﻿@page
+@model WebApp.Pages.PurchasingPages.IndexModel
+@{
+    ViewData["Title"] = "Purchasing System";
+}
+
+<h1 class="pb-4">@ViewData["Title"]</h1>
+
+<blockquote class="blockquote">
+    Purchasing system will allow the manager to manage current orders by adding or removing stock items, manage the quantities and prices to order, and delete/save/place orders.
+</blockquote>
+
+<span class="h3">Bugs for Purchasing System</span>
+<ul class="mt-4">
+    <li class="h5">When pressing remove or add the vendor selection list is reset to 0</li>
+    <li class="h5">VendorInfo is not getting properly accessed by Purchasing.cshtml</li>
+    <li class="h5">VendorInfo property is not being saved after POSTS.</li>
+</ul>

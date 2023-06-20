@@ -1,0 +1,28 @@
+﻿@page
+@model WebApp.Pages.RentalPages.IndexModel
+@{
+    ViewData["Title"] = "Rentals System";
+}
+
+<h2 class="pb-4">@ViewData["Title"]</h2>
+
+<blockquote class="blockquote">
+    This component handles renting and return of equipment. 
+    A rental record is created along with the rental details. Each rental equipment is independent of the previous rentals.
+    Coupons are presented at the time of rental. 
+    When customers return rented equipment, it is checked, comments recorded and the rental is paid. 
+    Partial return is not allowed. 
+    If the rental period for equipment is expected to be different, then separate rental should be created.
+    A rental is considered complete (cannot be modified) once payment has been done (subtotal > 0).
+    A rental cannot be modified if modification is past the RentalDateOut.
+    The renting page is the only page that has role authentication and manually set in the backend OnGet().
+</blockquote>
+
+<span class="h3">Bugs for Rentals System</span>
+<p class="h5 pt-4">Renting</p>
+<ul class="mt-4">
+    <li class="h6">Removing all equipment from the rental does not delete the existing rental id and the associated coupon (if any). </li>
+    <li class="h6">There is no button to remove the coupon that is already applied. To remove, delete and click Apply as long as any equipment exists in the rental.</li>
+    <li class="h6">In case 2 or more customers are sharing the same phone number, the program will select any customers that satisfy the condition.</li>
+    <li class="h6">The header in the table is not fixed and it scrolls along.</li>
+</ul>

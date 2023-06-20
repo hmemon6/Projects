@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-WebApp-BFF79F39-2EFA-4C05-8572-81F0707E822C</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Pages\PurchasingPages\" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <ProjectReference Include="..\EToolsSecurity\EToolsSecurity\EToolsSecurity.csproj" />
+    <ProjectReference Include="..\Purchasing\Purchasing.csproj" />
+    <ProjectReference Include="..\Receiving\Receiving.csproj" />
+    <ProjectReference Include="..\Rentals\Rentals.csproj" />
+    <ProjectReference Include="..\Sales\Sales.csproj" />
+  </ItemGroup>
+
+</Project>

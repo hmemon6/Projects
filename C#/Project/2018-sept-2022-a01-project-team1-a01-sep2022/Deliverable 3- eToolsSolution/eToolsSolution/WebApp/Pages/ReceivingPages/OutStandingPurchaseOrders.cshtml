@@ -1,0 +1,42 @@
+﻿@page
+@model WebApp.Pages.ReceivingPages.OutStandingPurchaseOrdersModel
+@{
+    ViewData["Title"] = "OutStanding Purchase Orders";
+}
+<h1 class="pb-4">@ViewData["Title"]</h1>
+
+@if(Model.PurchaseOrderList.Count() > 0)
+{
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Purchase Order ID</th>
+                <th>Order Date</th>
+                <th>Vendor</th>
+                <th>Phone</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.PurchaseOrderList)
+            {
+                <tr>
+                    <td>
+                        <a title="Select" asp-page="/ReceivingPages/Receiving"
+                   asp-route-CurrentPurchaseOrderID="@item.PurchaseOrderID">
+                            Select
+                        </a>
+                    </td>
+                    <td>@item.PurchaseOrderID</td>
+                    <td>@item.OrderDate</td>
+                    <td>@item.Vendor</td>
+                    <td>@item.Phone</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <h3>There are no Outstanding Purchase Orders at the moment</h3>
+}

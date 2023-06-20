@@ -1,0 +1,102 @@
+﻿@page
+@model WebApp.Pages.SalesPages.ShoppingModel
+@{
+    ViewData["Title"] = "Shopping";
+}
+<div class="d-flex">
+    <a class="btn btn-primary btn-lg active mx-2" asp-page="/SalesPages/Shopping">Shopping</a>
+    <a class="btn btn-primary btn-lg mx-2" asp-page="/SalesPages/Cart">Shopping Cart</a>
+    <a class="btn btn-primary btn-lg mx-2" asp-page="/SalesPages/Checkout">Checkout</a>
+</div>
+<h2 class="pb-4 pt-2 mx-2">@ViewData["Title"]</h2>
+
+@if (@Model.FeedBack != null)
+{
+    <p>@Model.FeedBack</p>
+}
+    <section class="d-flex">
+
+        <aside>
+            <ul class="list-group">
+                @foreach(var category in Model.CategoryList)
+                {
+                <form method="post">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <input type="hidden" name="CategoryList.Index" value="@category.CategoryID" />
+                    <input type="hidden" asp-for="CategoryDescription" value="@category.Description"/>
+                    <button type="submit" asp-page-handler="Search" title="category filter" class="list-group-item list-group-item-action rounded">
+                         @category.Description
+                    </button>
+                    <span class="text-primary px-3">@category.Quantity</span>
+                    <input type="hidden" name="CategoryList[@category.CategoryID].CategoryID" value="@category.CategoryID"/>
+                    <input type="hidden" name="CategoryList[@category.CategoryID].Description" value="@category.Description"/>
+                    <input type="hidden" name="CategoryList[@category.CategoryID].Quantity" value="@category.Quantity"/>
+                </li>
+                </form>
+                }
+            </ul>
+        </aside>
+
+        <div class="mx-5">
+            @if (Model.ItemList.Count() > 0)
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>  Quantity</th>
+                            <th>Item & Price</th>
+                            <th>In Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach(var item in Model.ItemList)
+                    {
+                        <tr>
+                            <form method="post">
+                                <td>
+                                   <input type="hidden" name="ItemList.Index" value="@item.StockItemID" />
+                                    <input type="hidden" asp-for="StockItem" value="@item.StockItemID" />
+                                    <button type="submit" asp-page-handler="AddItem" title="add item to cart" class="btn btn-primary btn-md">
+                                        Add
+                                    </button>
+                                </td>
+                                <td>
+                                    <input class="mx-3" type="number" asp-for="ItemQuantity" />
+                                </td>
+                                <td>
+                                    @item.SellingPrice.ToString("0.00") @item.Description
+                                </td>
+                                <td class="px-2">
+                                    @item.QuantityOnHand
+                                    <input type="hidden" name="ItemList[@item.StockItemID].StockItemID" value="@item.StockItemID"/>
+                                    <input type="hidden" name="ItemList[@item.StockItemID].Description" value="@item.Description"/>
+                                    <input type="hidden" name="ItemList[@item.StockItemID].SellingPrice" value="@item.SellingPrice"/>
+                                    <input type="hidden" name="ItemList[@item.StockItemID].QuantityOnHand" value="@item.QuantityOnHand"/>
+                                </td>
+                            </form>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </section>
+
+@*FOR FUTURE REFERENCE USE THIS FOR CATEGORIES
+
+<ul class="list-group">
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    Cras justo odio
+    <span class="badge badge-primary badge-pill">14</span>
+  </li>
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    Dapibus ac facilisis in
+    <span class="badge badge-primary badge-pill">2</span>
+  </li>
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    Morbi leo risus
+    <span class="badge badge-primary badge-pill">1</span>
+  </li>
+</ul>
+*@

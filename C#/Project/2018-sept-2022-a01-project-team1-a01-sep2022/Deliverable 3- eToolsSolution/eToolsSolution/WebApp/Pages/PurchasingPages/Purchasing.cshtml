@@ -1,0 +1,232 @@
+﻿@page
+@model WebApp.Pages.PurchasingPages.PurchasingModel
+@{
+    ViewData["Title"] = "Purchasing";
+}
+
+<h1 class="pb-4">@ViewData["Title"]</h1>
+
+<form method="post">
+    <label class="align-middle fw-bold">
+        Select Vendor
+        <br />
+
+        <select asp-for="SelectedVendorID">
+            <option value="0">select a vendor...</option>
+            @foreach (var vendor in Model.VendorSelection)
+            {
+                    @*<option value="@vendor.VendorID" selected="@(Model.SelectedVendorID == vendor.VendorID)">@vendor.VendorName</option>*@
+                    <option value="@vendor.VendorID">@vendor.VendorName</option>
+            }
+        </select>
+        <button type="submit" class="btn btn-primary" asp-page-handler="SelectVendor">
+            Display Vendor
+        </button>  
+    </label>
+</form>
+
+<form method="post">
+    <div class="d-flex">
+        <label class="fw-bold me-3">Vendor Name: </label>
+        <input type="hidden" name="Model.VendorInfo.VendorID" value="@Model.VendorInfo.VendorName" />
+        <label class="fw-bold me-3">Vendor ID: </label>
+        <input type="hidden" name="Model.VendorInfo.VendorID" value="Model.VendorInfo.VendorID" />
+        <label class="fw-bold me-3">PurchaseOrder ID: </label>
+        <input type="hidden" name="Model.VendorInfo.VendorID" value="Model.VendorInfo.PurchaseOrderID" />
+        <label class="fw-bold me-3">City: </label>
+        <input type="hidden" name="Model.VendorInfo.VendorID" value="Model.VendorInfo.City" />
+        <label class="fw-bold me-3">Vendor Phone Number: </label>
+        <input type="hidden" name="Model.VendorInfo.VendorID" value="Model.VendorInfo.PhoneNumber" />
+    </div>
+
+    <br />
+    <button type="submit" class="btn btn-primary" asp-page-handler="Update">
+        Update
+    </button>  
+    <button type="submit" class="btn btn-success " asp-page-handler="Place">
+        Place
+    </button>  
+    <button type="submit" class="btn btn-danger" asp-page-handler="Delete">
+        Delete
+    </button>  
+    <button type="submit" class="btn btn-secondary" asp-page-handler="Clear">
+        Clear
+    </button>  
+    <br />
+    <br />
+
+    <h2>Current Items</h2>
+
+    <table width="100%">
+        <col style="width:10%">
+        <col style="width:10%">
+        <col style="width:30%">
+        <col style="width:10%">
+        <col style="width:10%">
+        <col style="width:10%">
+        <col style="width:5%">
+        <col style="width:5%">
+        <col style="width:10%">
+        <thead>
+            <tr>
+                @*Remove button column header*@
+                <th> </th>
+                <th>ID</th>
+                <th>Description</th>
+                <th>QOH</th>
+                <th>ROL</th>
+                <th>QOO</th>
+                <th>QTO</th>
+                <th>Price ($)</th>
+                @*Refresh button column header*@
+                <th> </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var currentItem in Model.CurrentItems)
+            {
+                <tr>
+                    <td>
+                        <input type="hidden" name="CurrentItems.Index" value="@currentItem.StockItemID" />
+                        @* name and value are used instead of asp-for
+                    these are used here because we are going to a list of item
+                    and we need to index the individual instances in some fashion*@
+                        <button type="submit" class="btn btn-danger" name="RemoveStockItemID" value="@currentItem.StockItemID"
+                            asp-page-handler="RemoveItem">
+                            Remove
+                        </button>
+                    </td>
+                    <td>
+                        @* tie value to incoming data index (see button above)
+                    The item.Name is the field of interest*@
+                        <input type="hidden" name="CurrentItems[@currentItem.StockItemID].StockItemID" value="@currentItem.StockItemID" readonly />
+                        @currentItem.StockItemID
+                    </td>
+                    <td>
+                        @*Not actually inputs, only exists for indexing*@
+                        <input type="hidden" name="CurrentItems[@currentItem.StockItemID].Description" value="@currentItem.Description" readonly />
+                        @currentItem.Description
+                    </td>
+                    <td>
+                        <input type="hidden" name="CurrentItems[@currentItem.StockItemID].QuantityOnHand" value="@currentItem.QuantityOnHand" readonly />
+                        @currentItem.QuantityOnHand
+                    </td>
+                    <td>
+                        <input type="hidden" name="CurrentItems[@currentItem.StockItemID].ReOrderLevel" value="@currentItem.ReOrderLevel" readonly />
+                        @currentItem.ReOrderLevel
+                    </td>
+                    <td>
+                        <input type="hidden" name="CurrentItems[@currentItem.StockItemID].QuantityOnOrder" value="@currentItem.QuantityOnOrder" readonly />
+                        @currentItem.QuantityOnOrder
+                    </td>
+                    @*Editable Fields*@
+                    <td>
+                        <input type="number" name="CurrentItems[@currentItem.StockItemID].QuantityToOrder" value="@currentItem.QuantityToOrder" min="0" step="0"/>
+                    </td>
+                    <td>
+                        <input type="number" name="CurrentItems[@currentItem.StockItemID].PurchasePrice" value="@currentItem.PurchasePrice" min="0.00" step="0.01"/>
+                    </td>
+                    @* tie value to incoming data index (see button above) *@
+
+                    @*<td>
+                        <input type="hidden" name="CurrentItems[@currentItem.StockItemID].Total" value="@currentItem.Total" readonly />
+                        @currentItem.Total
+                    </td>*@
+                    <td>
+                        <input type="hidden" name="CurrentItems.Refresh" value="@currentItem.StockItemID" />
+                        @* name and value are used instead of asp-for
+                    these are used here because we are going to a list of item
+                    and we need to index the individual instances in some fashion*@
+                        <button type="submit" class="btn btn-primary" name="RefreshStockItemID" value="@currentItem.StockItemID"
+                            asp-page-handler="RefreshItem">
+                            Refresh
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+    <div class="d-flex justify-content-end">
+        <label class="fw-bold me-3">Subtotal: </label>
+        @*<input type="hidden" name="Model.CurrentActiveOrderDetails.SubTotal" value="@Model.CurrentActiveOrderDetails.SubTotal" />*@
+        <label class="fw-bold me-3">GST: </label>
+        @*<input type="hidden" name="Model.CurrentActiveOrderDetails.GST" value="Model.CurrentActiveOrderDetails.GST" />*@
+        <label class="fw-bold me-3">Total: </label>
+        @*<input type="hidden" name="Model.CurrentActiveOrderDetails.Total" value="Model.CurrentActiveOrderDetails.Total" />*@
+    </div>
+    <br />
+    <h2>Available Items</h2>
+    <table width="100%">
+        <col style="width:10%">
+        <col style="width:10%">
+        <col style="width:30%">
+        <col style="width:10%">
+        <col style="width:10%">
+        <col style="width:10%">
+        <col style="width:10%">
+        <col style="width:10%">
+        <thead>
+            <tr>
+                @*Add button column header*@
+                <th> </th>
+                <th>ID</th>
+                <th>Description</th>
+                <th>QOH</th>
+                <th>ROL</th>
+                <th>QOO</th>
+                <th>Buffer</th>
+                <th>Price ($)</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var availableItem in Model.AvailableItems)
+            {
+                <tr>
+                    <td>
+                        <input type="hidden" name="AvailableItems.Index" value="@availableItem.StockItemID" />
+                        @* name and value are used instead of asp-for
+                    these are used here because we are going to a list of item
+                    and we need to index the individual instances in some fashion*@
+                        <button type="submit" name="SelectedStockItemID" class="btn btn-primary " value="@availableItem.StockItemID"
+                            asp-page-handler="AddItem">
+                            Add
+                        </button>
+                    </td>
+                    <td>
+                        @* tie value to incoming data index (see button above)
+                    The item.Name is the field of interest*@
+                        <input type="hidden" name="AvailableItems[@availableItem.StockItemID].StockItemID" value="@availableItem.StockItemID" readonly />
+                        @availableItem.StockItemID
+                    </td>
+                    <td>
+                        <input type="hidden" name="AvailableItems[@availableItem.StockItemID].Description" value="@availableItem.Description" readonly />
+                        @availableItem.Description
+                    </td>
+                    <td>
+                        <input type="hidden" name="AvailableItems[@availableItem.StockItemID].QuantityOnHand" value="@availableItem.QuantityOnHand" readonly />
+                        @availableItem.QuantityOnHand
+                    </td>
+                    <td>
+                        <input type="hidden" name="AvailableItems[@availableItem.StockItemID].ReOrderLevel" value="@availableItem.ReOrderLevel" readonly />
+                        @availableItem.ReOrderLevel
+                    </td>
+                    <td>
+                        <input type="hidden" name="AvailableItems[@availableItem.StockItemID].QuantityOnOrder" value="@availableItem.QuantityOnOrder" readonly />
+                        @availableItem.QuantityOnOrder
+                    </td>
+                    <td>
+                        <input type="hidden" name="AvailableItems[@availableItem.StockItemID].BufferQuantity" value="@availableItem.BufferQuantity" readonly />
+                        @availableItem.BufferQuantity
+                    </td>
+                    <td>
+                        <input type="hidden" name="AvailableItems[@availableItem.StockItemID].PurchasePrice" value="@availableItem.PurchasePrice" readonly />
+                        @availableItem.PurchasePrice
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>

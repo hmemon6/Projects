@@ -1,0 +1,17 @@
+﻿@page
+@model WebApp.Pages.SalesPages.IndexModel
+@{
+    ViewData["Title"] = "Sales - Info";
+}
+<h2 class="pb-4">@ViewData["Title"]</h2>
+
+<blockquote class="blockquote">
+    This component handles the sales and refunds of items.
+    A Sale record is made with every sale with the sale details, listing each item sold and the quantity.
+    When customers refund an item a refund record is created as well as a refund details with the items refunded.
+</blockquote>
+
+<span class="h3">Bugs for Sales System</span>
+<ul class="mt-4">
+    <li class="h5">In refunds, the coupon does not apply as a discount for the refund. </li>
+</ul>

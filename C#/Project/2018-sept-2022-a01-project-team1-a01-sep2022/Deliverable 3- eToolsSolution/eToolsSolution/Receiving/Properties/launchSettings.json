@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Receiving": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:65257;http://localhost:65262"
+    }
+  }
+}
